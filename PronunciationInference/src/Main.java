@@ -104,7 +104,7 @@ public class Main {
 				float averageCandidates = 0;
 				System.out.println("NEW EPOCH");
 				
-				ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(12);
+				ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newCachedThreadPool();
 				List<List<Word[]>> partitionedData = Lists.partition(data, 100);
 				int taskNum = 0;
 				for (List<Word[]> dataPart : partitionedData) {
