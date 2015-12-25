@@ -32,10 +32,10 @@ import com.google.common.primitives.Ints;
 
 public class Main {
 
-	private static final String trainingPath = "C:/Users/Jack/Documents/PronunciationInference/data/sonnets.txt";
-	private static final String resultsPath = "C:/Users/Jack/Documents/PronunciationInference/results/";
-	private static final String cmuDictionary = "C:/Users/Jack/Documents/PronunciationInference/data/cmudict.txt";
-	private static final String testFile = "C:/Users/Jack/Documents/PronunciationInference/data/test.txt";
+	private static final String trainingPath = 	"data/sonnets.txt";
+	private static final String resultsPath = 	"results/";
+	private static final String cmuDictionary = "data/cmudict.txt";
+	private static final String testFile = 		"data/test.txt";
 	
 	private static String[] testLines = new String[]{
 		"From fairest creatures we desire increase",
