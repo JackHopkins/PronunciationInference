@@ -106,7 +106,7 @@ public class Main {
 				float averageCandidates = 0;
 				System.out.println("NEW EPOCH");
 				
-				ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newCachedThreadPool();
+				ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(24);
 				List<List<Word[]>> partitionedData = Lists.partition(data, 100);
 				int taskNum = 0;
 				for (List<Word[]> dataPart : partitionedData) {
@@ -139,7 +139,7 @@ public class Main {
 		}
 		
 		File file = new File(resultsPath+x);
-
+		file.mkdirs();
 		// if file doesnt exists, then create it
 		if (!file.exists()) {
 			file.createNewFile();
