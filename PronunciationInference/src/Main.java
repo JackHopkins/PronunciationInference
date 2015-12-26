@@ -1,5 +1,7 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -135,7 +137,20 @@ public class Main {
 		for (Word word: dictionary.values()) {
 			builder.append(word.toStringVerbose()+"\n");
 		}
-		Files.write(builder.toString().getBytes(), new File(resultsPath+x));
+		
+		File file = new File(resultsPath+x);
+
+		// if file doesnt exists, then create it
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(builder.toString());
+		bw.close();
+
+		
 	}
 	static String evaluate() {
 		StringBuilder builder = new StringBuilder();

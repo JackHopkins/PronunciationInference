@@ -92,7 +92,7 @@ public class Task implements Runnable {
 					}
 					//System.out.println(candidate.pattern+" - "+candidate.getProbability());
 				}
-				System.out.println("		"+(System.currentTimeMillis()-sTime)+" - 	"+count+" Maximisation:	"+getMaximumLikelihood(bestCandidates).toVerboseString());
+				System.out.println("-		"+(System.currentTimeMillis()-sTime)+" - 	"+count+" Maximisation:	"+getMaximumLikelihood(bestCandidates).toVerboseString());
 
 				/*Path best = null;
 				Double prob = 0.0d;
