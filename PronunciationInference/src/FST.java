@@ -286,7 +286,13 @@ public class FST {
 			throw new RuntimeException("ERGH!");
 		}
 		//IS THE BELOW LINE WORKING?
-		entryNode.out.put(startingNode, (float)(entryNode.out.get(startingNode) + (1-entryNode.out.get(startingNode))*-error));//+(1-entryNode.out.get(startingNode)*error)));//(1-entryNode.out.get(startingNode)*-error)));
+		Float startingNodeVal = entryNode.out.get(startingNode);
+		Double change = ((1-startingNodeVal)*-error);
+		Double value = startingNodeVal + change;
+		if (value.isNaN()) {
+			throw new RuntimeException("ERGH!!!"+change +" - "+ startingNodeVal);
+		}
+		entryNode.out.put(startingNode, new Float(value));//(1-entryNode.out.get(startingNode)*-error)));
 		/*float sum = 0;
 		for (Node key : entryNode.out.keySet() ) {
 			sum += entryNode.out.get(key);
@@ -294,7 +300,7 @@ public class FST {
 		for (Node key : entryNode.out.keySet() ) {
 			entryNode.out.put(key, entryNode.out.get(key)/sum);
 		}*/
-		return entryNode.out.get(startingNode);//*divideAllNodesInPathBy(factor, startingNode);
+		return value;//entryNode.out.get(startingNode);//*divideAllNodesInPathBy(factor, startingNode);
 	}
 	private double divideAllNodesInPathBy(double val, Node node) {
 		//double entryProb = entryNode.out.get(node);
@@ -330,7 +336,7 @@ public class FST {
 		Node startingNode = findStartingNode(pattern);
 		if (startingNode == null) return -1.0;
 		//for (Node firstOutNodes : startingNode.)
-		Double prob = findPathProbability(startingNode)*entryNode.out.get(startingNode);
+		Double prob = new Double(entryNode.out.get(startingNode));//*findPathProbability(startingNode);
 		if (prob.isNaN()) {
 			return -1.0;
 			//throw new RuntimeException("Probability is NaN!");

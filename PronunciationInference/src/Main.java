@@ -54,7 +54,8 @@ public class Main {
 
 		};
 	private static Double[] testLastBest = new Double[]{0.0, 0.0, 0.0, 0.0, 0.0};
-	static final int MAX_ITERATIONS = 20;
+	static final int MAX_ITERATIONS = 2000;
+	private static final int threads = 8;
 	static Map<String, Word> dictionary = new ConcurrentHashMap<String, Word>();
 	static Map<Integer, List<ICombinatoricsVector<Integer>>> distributions = new ConcurrentHashMap<Integer, List<ICombinatoricsVector<Integer>>>();
 	//static float lambda = 0.08f;
@@ -106,7 +107,7 @@ public class Main {
 				float averageCandidates = 0;
 				System.out.println("NEW EPOCH");
 				
-				ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newCachedThreadPool();
+				ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(threads);
 				List<List<Word[]>> partitionedData = Lists.partition(data, 100);
 				int taskNum = 0;
 				for (List<Word[]> dataPart : partitionedData) {

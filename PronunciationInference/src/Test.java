@@ -2,7 +2,20 @@
 public class Test {
 
 	public static void main(String[] args) {
-		double[] vals1 = new double[]{0.5, 0.5, 0.5}; 
+		
+		double bestX = 0d;
+		double lowestError = Double.MAX_VALUE;
+		for (double i = -5; i < 5; i+=0.00000001) {
+			//0.45x + 0.3x^2 + 0.05x^3  = 0.2
+			double error = Math.abs(-0.2 + 0.45*i + 0.3*(i*i) + 0.05*(i*i*i));
+			if (error < lowestError) {
+				lowestError = error;
+				bestX = i;
+			}
+			
+		}
+		System.out.println("Best X: "+bestX);
+	/*	double[] vals1 = new double[]{0.5, 0.5, 0.5}; 
 		double[] vals2 = new double[]{0.9, 0.2, 0.7}; 
 		double[] vals3 = new double[]{0.4, 0.5, 0.625};
 		
@@ -68,7 +81,7 @@ public class Test {
 			
 			System.out.println(error);
 		}
-		return input;
+		return input;*/
 	}
 	public static double sig(double x)
 	{//((Input - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow;

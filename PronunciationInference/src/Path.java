@@ -6,7 +6,7 @@ import org.paukov.combinatorics.ICombinatoricsVector;
 
 
 public class Path {
-	private static final float minimum = 0.0000001f;
+	private static final float minimum = 0.00000000000000001f;
 	ICombinatoricsVector<Integer> distribution;
 	String pattern;
 	Word[] tokens;
@@ -17,18 +17,22 @@ public class Path {
 	}
 
 	public float getProbability() {
-		float probability = 1;
+		float probability = 1.0f;
 		String current;
 		String patternCopy = new String(pattern);
 		for (int j = 0; j < distribution.getSize(); j++) {
 			current = patternCopy.substring(0, distribution.getValue(j));								
 			Word word = tokens[j];
 			probability *= word.fst.getForwardPathProbability(current);//word.stress[Word.stressLookup(current)];
-			if (probability < minimum) probability = minimum;
-
-			if (((Float)probability).isNaN()) {
+			if (probability < minimum) {
+				return minimum;
+			}
+			if (new Float(probability).isNaN()) {
 				throw new RuntimeException("Probability is NaN!");
 			}
+		}
+		if (new Float(probability).isNaN()) {
+			throw new RuntimeException("Probability is NaN!");
 		}
 		return probability;
 	}
@@ -60,7 +64,7 @@ public class Path {
 
 	return currentProb;
 	}
-	public float normaliseBy(float desired) {
+	public float normaliseBy(Float desired) {
 		//FACTOR == GOAL
 		float currentProb = getProbability();
 		//float error = float.MAX_VALUE;
@@ -68,19 +72,31 @@ public class Path {
 			String patternCopy = new String(pattern);
 			String current;
 			
+			if (new Float(currentProb).isNaN()) {
+				throw new RuntimeException("Current Prob="+currentProb);
+			}
+			if (desired.isNaN()) {
+				throw new RuntimeException("Desired="+desired);
+			}
+			
 			Double error = (double) (currentProb-desired);
-			Double fstFactor = 0d;
+			/*Double fstFactor = 0d;
 			if(error < 0) {
 			fstFactor = Math.pow(-error, 1.0d/tokens.length);
 			fstFactor*=-1;
 			}else{
 			fstFactor = Math.pow(error, 1.0d/tokens.length);
+			}*/
+			
+			//Double factor = Math.pow((desired/currentProb),(1.0f/tokens.length));
+			
+			//(0.5*((0.25/0.12)^0.3333))*(0.4*((0.25/0.12)^0.3333))*(0.6*((0.25/0.12)^0.3333))
+			
+			
+			if (error.isNaN()) {
+				throw new RuntimeException("This should not happen: Current Prob="+currentProb+", Desired Prob="+desired);
 			}
 			currentProb = 1.0f;
-			if (error.isNaN()) {
-				throw new RuntimeException("This should not happen");
-			}
-
 			for (int j = 0; j < distribution.getSize(); j++) {
 				current = patternCopy.substring(0, distribution.getValue(j));
 				patternCopy = patternCopy.substring(distribution.getValue(j));

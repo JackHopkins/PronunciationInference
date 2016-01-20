@@ -62,7 +62,7 @@ public class Task implements Runnable {
 				}
 				//NORMALISE ALL TRANSITION PROBABILITIES SO THEIR SUM IS 1
 
-				float error = Float.MAX_VALUE;
+				double error = Double.MAX_VALUE;
 
 				float bestProb = 0.0f;
 				Path best = null;
@@ -73,7 +73,7 @@ public class Task implements Runnable {
 
 					sumProbability = 0;
 
-					error = 1.0f - iterativeNormalisePaths(bestCandidates);
+					error = 1.0d - iterativeNormalisePaths(bestCandidates);
 				}
 
 				System.out.println(Main.line+"/"+Main.totalDataLength+"	"+(System.currentTimeMillis()-sTime)+" - 	"+epoch+" Expectation:		"+getMaximumLikelihood(bestCandidates).toVerboseString());
@@ -112,12 +112,12 @@ public class Task implements Runnable {
 		}
 	}
 	private static float simpleNormalisePaths(List<Path> bestCandidates) {
-		float localSumProbability = sumPath(bestCandidates);
+		double localSumProbability = sumPath(bestCandidates);
 		float sumProbability = 0.0f;
 		for (Path candidate : bestCandidates) {
-			sumProbability += candidate.simpleNormaliseBy(localSumProbability);
+			sumProbability += candidate.simpleNormaliseBy(new Float(localSumProbability));
 		}
-		return sumPath(bestCandidates);
+		return new Float(sumPath(bestCandidates));
 	}
 	/**
 	 * Normalises the paths
@@ -126,39 +126,46 @@ public class Task implements Runnable {
 	 */
 	private static float iterativeNormalisePaths(List<Path> bestCandidates) {
 		float sumProbability = 0.0f;
-		Float localSumProbability = 0f;
+		Double localSumProbability = 0d;
 		Float[] desiredProb = new Float[bestCandidates.size()];
 		for (int i = 0; i < desiredProb.length; i++) {
 
 			//For every path, the find the factor to bring the path's value up to expected levels.
 			//TRY WITHOUT THIS LINE?
-			
+			localSumProbability = sumPath(bestCandidates);
 			Path candidate = bestCandidates.get(i);
-			float candidateProb = candidate.getProbability();
-			//float desiredCandidateProb = candidateProb/localSumProbability;
-			desiredProb[i] = candidateProb;///localSumProbability;
+			Float candidateProb = candidate.getProbability();
+			if(candidateProb.isNaN()) {
+				throw new RuntimeException("EEK");
+			}
+			if (localSumProbability.isNaN() || localSumProbability == 0) {
+				throw new RuntimeException("ORK");
+			}
+			double desiredCandidateProb = candidateProb/localSumProbability;
+			//desiredProb[i] = candidateProb;///localSumProbability;
 			//float factor = desiredCandidateProb/candidateProb;
-			//candidate.normaliseBy(desiredCandidateProb);///sumProbability);
+			 candidate.normaliseBy(new Float(desiredCandidateProb));///sumProbability);
 
-			//float newProb = candidate.getProbability();
+			float newProb = candidate.getProbability();
 			/*if (newProb > bestProb) {
 				bestProb = newProb;
 				best = candidate;
 			}*/
-			//sumProbability += newProb;//newProb;
+			sumProbability += newProb;//newProb;
 			//System.out.println(newProb);
 		}
-		for (int i = 0; i < desiredProb.length; i++) {
+		/*for (int i = 0; i < desiredProb.length; i++) {
 			Path candidate = bestCandidates.get(i);
 			localSumProbability = sumPath(bestCandidates);
-			candidate.normaliseBy(candidate.getProbability()/localSumProbability);
+			double factor = candidate.getProbability()/localSumProbability;
+			candidate.normaliseBy(new Float(factor));
 			float newProb = candidate.getProbability();
 			sumProbability += newProb;
-		}
+		}*/
 		return sumProbability;
 	}
-	private static float sumPath(List<Path> paths) {
-		float sumProbability = 0;
+	private static Double sumPath(List<Path> paths) {
+		double sumProbability = 0;
 		for (Path candidate2 : paths) {
 			sumProbability += candidate2.getProbability();
 		}	
